@@ -1,1 +1,1 @@
-This is a readme.
+This is a readme. It is about a recipe book.

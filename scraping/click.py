@@ -16,7 +16,7 @@ website = website.replace(".com/", "")
 driver = webdriver.Firefox()
 
 driver.get(url)
-
+driver.implicitly_wait(20)
 # Wait for the cookie consent banner to be visible
 try:
     # Wait for the element with ID 'notice' to be visible

@@ -16,18 +16,19 @@ website = website.replace(".com/", "")
 driver = webdriver.Firefox()
 
 driver.get(url)
-driver.implicitly_wait(20)
+
 # Wait for the cookie consent banner to be visible
+driver.implicitly_wait(20)
+alert = driver.switch_to.alert
+alert.accept()
 try:
-    # Wait for the element with ID 'notice' to be visible
-    notice = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.ID, 'notice')))
-    
-    # Wait for the AGREE button to be clickable
-    agree_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, 'sp_choice_type_11')))
+    popup = driver.find_element(By.ID, 'notice')
+
+    agree_button = popup.find_element(By.CSS_SELECTOR, 'button[title="AGREE"]')
     agree_button.click()
 
 except Exception as e:
     print("An error occurred:", e)
 
-driver.close()
+
 

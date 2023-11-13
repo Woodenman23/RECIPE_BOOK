@@ -11,20 +11,22 @@ url = "https://allrecipes.com"
 
 DRIVER.get(url)
 
-# Define a function to handle the cookie pop-up
+def main():
+    # Call the function to handle the cookie pop-up
+    handle_cookie_popup()
+
+    first_recipe = 
+
 def handle_cookie_popup():
     try:
-        # wait for element to appear
-
         # Find the element that accepts or agrees to cookies (modify the selector as needed)
         reject_button = DRIVER.find_element(By.ID, "onetrust-reject-all-handler")
 
         # Click the button to accept cookies
-        reject_button.click()
+        return reject_button.click()
     except:
         print("No cookie pop-up found or encountered an error.")
 
-# Call the function to handle the cookie pop-up
-handle_cookie_popup()
+        return 0
 
-#
+main()

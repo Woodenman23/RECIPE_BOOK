@@ -3,18 +3,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from my_selenium import DRIVER
+
 # Replace with the URL of the site with the cookie pop-up
 url = "https://allrecipes.com"
 
 # Initialize the WebDriver
-driver = webdriver.Firefox()
-driver.get(url)
+DRIVER = webdriver.Firefox()
+DRIVER.get(url)
 
 # Define a function to handle the cookie pop-up
 def handle_cookie_popup():
     try:
         # Find the element that accepts or agrees to cookies (modify the selector as needed)
-        reject_button = driver.find_element(By.ID, "onetrust-reject-all-handler")
+        reject_button = DRIVER.find_element(By.ID, "onetrust-reject-all-handler")
 
         # Click the button to accept cookies
         reject_button.click()

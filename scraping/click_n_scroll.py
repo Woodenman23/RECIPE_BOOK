@@ -20,9 +20,9 @@ button = driver.find_element(By.ID,"whyUsDropdown")
 button.click()
 
 n = 10
-while n<111111:
+while n<1111:
     driver.execute_script(f"window.scrollTo({n-10}, {n});")
-    time.sleep(0.01)
+    time.sleep(0.05)
     n+=10
     
 driver.close()

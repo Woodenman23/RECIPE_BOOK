@@ -1,78 +1,62 @@
-from typing import List
-import sqlite3
-import pandas as pd
+import time
 
-N = 1
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from pathlib import Path
 
+from scraping.my_selenium import DRIVER
 
-class Recipe:
-    def __init__(self, name: str, cursor, conn, N):
-        self.name = name
-        crud_string = f"""
-            INSERT INTO recipes
-            VALUEs
-            ({N}, "{name}")
-            """
-        cursor.execute(crud_string)
+search_term = "vampire"
 
-        conn.commit()
-        N += 1
+def main():
+    url = "https://www.wikipedia.org/"
 
-    def add_ingredients(self, ingredients: List[str], cursor, conn, N):
-        self.ingredients = ingredients
-        ingredient_string = ["".join(ingredient) for ingredient in ingredients]
-        crud_string = f"""
-            INSERT INTO ingredients
-            VALUES
-            ({N}, "{ingredient_string}")
-"""
-        cursor.execute(crud_string)
+    DRIVER.get(url)
 
-        conn.commit()
-
-
-def main() -> None:
-    conn = sqlite3.connect("recipe_book")
-    cursor = conn.cursor()
-    create_tables(cursor, conn)
-
-    chicken_pie = create_recipe("Chicken Pie", cursor, conn)
-
-    chicken_pie.add_ingredients(["chicken", "pastry", "salt", "pepper"], cursor, conn)
-
-    cursor.execute(
-        """
-          SELECT
-          a.recipe_name,
-          b.ingredients
-          FROM recipes a
-          LEFT JOIN ingredients b ON a.recipe_id = b.recipe_id
-          """
+    try:
+        # Locate the close button element
+        close_button = WebDriverWait(DRIVER, 10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, ".banner__close"))
     )
 
-    df = pd.DataFrame(cursor.fetchall(), columns=["recipe_name", "ingredients"])
-    print(df)
+        # Click the close button to dismiss the banner
+        close_button.click()
+        
+        search_bar = DRIVER.find_element(By.XPATH, '//*[@id="searchInput"]')
+    
+        
+        search_bar.send_keys(search_term)
+        search_button = DRIVER.find_element(By.XPATH,"/html/body/div[3]/form/fieldset/button")
+        search_button.click()
+        
+         
+        paragraph1_text = _get_text("/html/body/div[2]/div/div[3]/main/div[3]/div[3]/div[1]/p[3]")
+        _add_to_file(paragraph1_text)
+        
 
 
-def create_tables(cursor, conn):
-    cursor.execute(
-        """
-                        CREATE TABLE IF NOT EXISTS recipes
-                        ([recipe_id] INTEGER PRIMARY KEY, [recipe_name] TEXT)
-                        """
-    )
+        time.sleep(5)
 
-    cursor.execute(
-        """
-                        CREATE TABLE IF NOT EXISTS ingredients
-                        ([recipe_id] INTEGER PRIMARY KEY, [ingredients] TEXT)
-                        """
-    )
-    conn.commit()
+    except:
+        print("something failed")
+        time.sleep(5)
+    DRIVER.quit()
 
+def _get_text(xpath):
+    text_element = DRIVER.find_element(By.XPATH, xpath)
+    text = text_element.text
+    return(text)
 
-def create_recipe(name, cursor, conn, N) -> Recipe:
-    return Recipe(name, cursor, conn, N)
+def _add_to_file(text: str):
+    
+    dir_path = Path(r'C:\\Users\fosterj\pyprojects\RECIPE_BOOK\wiki_texts')
 
+   
+    file_path = dir_path / search_term
+    with file_path.open(mode="w") as file: 
+        file.write(text)
 
 main()
+

@@ -25,21 +25,27 @@ def main():
             
             close_button.click()
         except TimeoutException:
-            pass
-            search_bar = DRIVER.find_element(By.XPATH, '//*[@id="searchInput"]')
+            print("passed")
+        search_bar = DRIVER.find_element(By.XPATH, '//*[@id="searchInput"]')
+    
         
-            
-            search_bar.send_keys(search_term)
-            search_button = DRIVER.find_element(By.XPATH,"/html/body/div[3]/form/fieldset/button")
-            search_button.click()
-            
-            
-            paragraph1_text = _get_text("/html/body/div[2]/div/div[3]/main/div[3]/div[3]/div[1]/p[3]")
-            _add_to_file(paragraph1_text)
-            
-
-
-            time.sleep(5)
+        search_bar.send_keys(search_term)
+        search_button = DRIVER.find_element(By.XPATH,"/html/body/div[3]/form/fieldset/button")
+        search_button.click()
+        
+        content = DRIVER.find_element(By.ID, 'content')
+        
+        paragraphs = content.find_elements(By.TAG_NAME, 'p')
+        
+        dir_path = Path(r'C:\\Users\fosterj\pyprojects\RECIPE_BOOK\wiki_texts')
+        file_path = dir_path / search_term
+        with file_path.open(mode="w") as file:
+            for paragraph in paragraphs:
+                text = paragraph.text
+                file.write("\n--------------------\n")
+                file.write(text)
+        
+        time.sleep(5)
 
     except:
         print("something failed")
@@ -53,10 +59,9 @@ def _get_text(xpath):
 
 def _add_to_file(text: str):
     
-    dir_path = Path(r'C:\\Users\fosterj\pyprojects\RECIPE_BOOK\wiki_texts')
-
+    
    
-    file_path = dir_path / search_term
+    
     with file_path.open(mode="w") as file: 
         file.write(text)
 

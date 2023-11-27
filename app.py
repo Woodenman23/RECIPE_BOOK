@@ -9,7 +9,7 @@ from pathlib import Path
 
 from scraping.my_selenium import DRIVER
 
-search_term = "vampire"
+search_term = "spanish food"
 
 def main():
     url = "https://www.wikipedia.org/"
@@ -35,18 +35,16 @@ def main():
         
         content = DRIVER.find_element(By.ID, 'content')
         
-        paragraphs = content.find_elements(By.TAG_NAME, 'p')
+        #need to scroll down page and find more <p>s
+        paragraphs = content.find_elements(By.TAG_NAME, 'p') 
         
         dir_path = Path(r'C:\\Users\fosterj\pyprojects\RECIPE_BOOK\wiki_texts')
-        file_path = dir_path / search_term
+        file_path = dir_path / f"{search_term}.txt"
         with file_path.open(mode="w") as file:
             for paragraph in paragraphs:
                 text = paragraph.text
                 file.write("\n--------------------\n")
                 file.write(text)
-        
-        time.sleep(5)
-
     except:
         print("something failed")
         time.sleep(5)
